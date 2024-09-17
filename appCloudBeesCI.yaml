@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudbees-ci
+  namespace: argo-cd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:computacenter-de/tech-task-wp07.git
+    targetRevision: feature/cloudbees_ci
+    path: ./cloudbees-ci
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cloudbeesci
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false # false, to avoid deletion of controllers and agents

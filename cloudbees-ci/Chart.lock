@@ -1,0 +1,6 @@
+dependencies:
+- name: cloudbees-core
+  repository: https://public-charts.artifacts.cloudbees.com/repository/public/
+  version: 3.56.2+4ea6c86568b8
+digest: sha256:7badff2c653144fd033d38766f2cbebfcd9abf2e29a650c1cbb052bdebc4771c
+generated: "2024-09-17T23:15:57.9593965+02:00"
