@@ -42,7 +42,7 @@ cloudbees-core:
     # OperationsCenter.Name -- the name in the URL under which Operations Center will be accessible in the given host.
     # For instance, if Subdomain is true, the URL to access Operations Center will be {{OperationsCenter.Protocol}}://{{OperationsCenter.Name}}.{{OperationsCenter.HostName}}:{{OperationsCenter.Port}}
     # If Subdomain is false, the URL to access Operations Center will be {{OperationsCenter.Protocol}}://{{OperationsCenter.HostName}}:{{OperationsCenter.Port}}/{{OperationsCenter.Name}}
-    Name: operationscenter
+    Name: cjoc
     # OperationsCenter.Protocol -- the protocol used to access CJOC. Possible values are http/https.
     Protocol: http
     # Protocol: https
