@@ -136,18 +136,24 @@ cloudbees-core:
     #   command: ['sh', '-c', 'until nslookup myservice; do echo waiting for myservice; sleep 2; done;']
 
     # OperationsCenter.ExtraVolumes -- Extra volumes to add to the pod
-    ExtraVolumes: []
+    ExtraVolumes:
     # ExtraVolumes:
     # - name: my-volume
     #   configMap:
     #     name: my-config-map
+      - name: controller-casc
+        configMap:
+          name: controller-casc-bundle
 
     # OperationsCenter.ExtraVolumeMounts -- Extra volume mounts to add to the container containing Operations Center
-    ExtraVolumeMounts: []
+    ExtraVolumeMounts:
     # ExtraVolumeMounts:
     # - name: my-volume
     #   mountPath: /var/my-path
     #   readOnly: true
+      - name: controller-casc
+        mountPath: /var/casc/demo-bundle
+        readOnly: false
   # Controller options
   Master:
     # Master.Enabled -- Whether to create the resources required to schedule controllers.
