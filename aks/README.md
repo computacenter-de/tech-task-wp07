@@ -94,6 +94,9 @@ manage HTTP traffic routing.
 If the corresponding class is set in the CloudBees operator, this ingress is automatically used.
 https://docs.cloudbees.com/docs/cloudbees-ci-kb/latest/cloudbees-ci-on-modern-cloud-platforms/deploy-a-dedicated-ingress-controller-for-external-communications
 
+#### Create a static IP and DNS label with the Azure Kubernetes Service (AKS) load balancer
+https://learn.microsoft.com/en-us/azure/aks/static-ip
+
 ## Security Enhancements
 
 1. **RBAC and AAD**: By enabling RBAC and integrating with AAD, we ensure that only authenticated and authorized users can access the AKS cluster.
