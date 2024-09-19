@@ -68,6 +68,32 @@ To verify the setup:
    kubectl get namespace
    kubectl describe storageclass default-storageclass
    ```
+## Enable AKS HTTP Application Routing via Azure CLI
+
+In your cases, enabling add-ons like **HTTP Application Routing** for your AKS
+clusters is not possible directly through the used AKS Terraform module (see
+above). Due to this limitation, we will need to enable these add-ons via the
+**Azure CLI** after the AKS cluster has been created.
+
+
+### 1. **Enable HTTP Application Routing Add-on**
+
+https://learn.microsoft.com/en-us/azure/aks/app-routing-migration
+
+To enable the **HTTP Application Routing Add-on** for your AKS cluster,
+we run the following CLI command:
+
+   ```bash
+   az aks approuting enable --resource-group <ResourceGroupName> --name <ClusterName>
+   ```
+
+Once this add-on is enabled, the `app-routing-system` namespace will be
+created, and an NGINX Ingress controller will be set up automatically to
+manage HTTP traffic routing.
+
+If the corresponding class is set in the CloudBees operator, this ingress is automatically used.
+https://docs.cloudbees.com/docs/cloudbees-ci-kb/latest/cloudbees-ci-on-modern-cloud-platforms/deploy-a-dedicated-ingress-controller-for-external-communications
+
 ## Security Enhancements
 
 1. **RBAC and AAD**: By enabling RBAC and integrating with AAD, we ensure that only authenticated and authorized users can access the AKS cluster.
