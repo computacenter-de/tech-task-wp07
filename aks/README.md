@@ -97,12 +97,6 @@ https://docs.cloudbees.com/docs/cloudbees-ci-kb/latest/cloudbees-ci-on-modern-cl
 #### Create a static IP and DNS label with the Azure Kubernetes Service (AKS) load balancer
 https://learn.microsoft.com/en-us/azure/aks/static-ip
 
-## Security Enhancements
-
-1. **RBAC and AAD**: By enabling RBAC and integrating with AAD, we ensure that only authenticated and authorized users can access the AKS cluster.
-2. **Managed Identity**: The AKS cluster uses a system-assigned managed identity for secure interaction with Azure resources (e.g., ACR).
-3. **Premium Disks**: Using the `Standard_D4s_v3` instance type ensures that premium disks are available, which are more secure and reliable for workloads requiring persistent storage.
-
 ## Key Configuration Details
 
 - **Node Pool**: The node pool configuration specifies `Standard_D4s_v3` as the VM size, ensuring at least 2 CPUs and 4 GiB of memory per node, with support for premium disks.
