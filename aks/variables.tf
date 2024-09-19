@@ -20,7 +20,7 @@ variable "location" {
 
 variable "resource_group_name" {
   type    = string
-  default = "aks-cariad-wp07"
+  default = "cariad-wp07-aks"
 }
 
 variable "use_brown_field_application_gateway" {
