@@ -104,5 +104,7 @@ https://learn.microsoft.com/en-us/azure/aks/static-ip
 - **Azure Container Registry (ACR)**: The AKS cluster is integrated with an ACR to securely pull container images.
 - **Storage Class**: A default storage class using Azure Premium disks is defined to support high-performance workloads like CloudBees CI.
 
-## AKS Steup Conclusion
+## AKS Steup Conclusion and notes
+
+tbd
 
