@@ -12,39 +12,6 @@ data:
       - "plugins.yaml"
     items:
       - "items.yaml"
-    jenkins:
-      - "jenkins.yaml"
-
-  jenkins.yaml: |
-    kube:
-      podTemplatesConfiguration:
-        templates:
-        - containers:
-          - args: "9999999"
-            command: "sleep"
-            envVars:
-            - envVar:
-                key: "GIT_SSL_NO_VERIFY"
-                value: "true"
-            image: "docker:27.1.1"
-            livenessProbe:
-              failureThreshold: 0
-              initialDelaySeconds: 0
-              periodSeconds: 0
-              successThreshold: 0
-              timeoutSeconds: 0
-            name: "docker"
-            workingDir: "/home/jenkins/agent"
-          label: "docker"
-          name: "docker"
-          yamlMergeStrategy: "override" 
-    unclassified:
-      hibernationConfiguration:
-        activities:
-        - "build"
-        - "web"
-        enabled: true
-        gracePeriod: 40000
 
   plugins.yaml: |
     plugins:
