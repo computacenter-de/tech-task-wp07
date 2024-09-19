@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-cd
+  namespace: argo-cd
+spec:
+  project: default
+  source:
+    chart: argo-cd
+    repoURL: ghcr.io/argoproj/argo-helm
+    targetRevision: 7.5.2
+    helm:
+      values: |
+        global:
+          domain: cariad-wp7.eastus.cloudapp.azure.com
+        configs:
+          params:
+            server.basehref: '/argocd'
+            server.rootpath: '/argocd'
+        server:
+          ingress:
+            enabled: true
+            annotations:
+              nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+              kubernetes.io/ingress.class: nginx
+            ingressClassName: webapprouting.kubernetes.azure.com
+            path: /argocd
+            pathType: ImplementationSpecific
+            tls: true
+  destination:
+    name: "in-cluster"
+    namespace: argo-cd
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
