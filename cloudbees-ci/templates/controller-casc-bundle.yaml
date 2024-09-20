@@ -34,6 +34,10 @@ data:
               id: key-vault-sp
               subscriptionId: ${sp_subscription}
               tenant: ${sp_tenant}
+    unclassified:
+      azureKeyVault:
+        credentialID: "key-vault-sp"
+        keyVaultURL: "https://cariad-wp7.vault.azure.net/"
 
   plugin-catalog.yaml: |
     type: "plugin-catalog"
