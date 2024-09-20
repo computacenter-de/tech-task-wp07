@@ -8,10 +8,6 @@ data:
     id: "jenkins"
     description: "Bundle for Operation Center"
     version: "1.1"
-    # itemRemoveStrategy:
-    #   items: "none"
-    #   rbac: "sync"
-    # rbacRemoveStrategy: "sync"
     jcasc:
       - "jenkins.yaml"
     catalog:
@@ -22,15 +18,6 @@ data:
       - "items.yaml"
 
   jenkins.yaml: |
-    # credentials:
-    #   system:
-    #     domainCredentials:
-    #     - credentials:
-    #       - usernamePassword:
-    #           id: "918e0010-fd2a-4459-a504-b13f36ea5ea1"
-    #           password: ${git-pwd}
-    #           scope: GLOBAL
-    #           username: "sps_openshift"
     cloudBeesCasCServer:
       defaultBundle: "demo-bundle"
       disableRemoteValidation: false
@@ -48,12 +35,6 @@ data:
                 localFolder: "/var/casc"
           pollingPeriod: 120
           purgeOnDeactivation: false
-      # cascAutoControllerProvisioning:
-      #   duration: 60
-      #   fireAndForget: true
-      #   initialDelay: 15
-      #   provisionControllerOnCreation: true
-      #   timeout: 600
   
   plugin-catalog.yaml: |
     type: "plugin-catalog"
