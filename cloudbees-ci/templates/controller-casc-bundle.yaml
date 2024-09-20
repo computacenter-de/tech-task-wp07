@@ -11,8 +11,8 @@ data:
     itemRemoveStrategy:
       items: "none"
     rbacRemoveStrategy: "sync"
-    # jcasc:
-    #   - "jenkins.yaml"
+    jcasc:
+      - "jenkins.yaml"
     catalog:
       - "plugin-catalog.yaml"
     plugins:
@@ -20,6 +20,19 @@ data:
     items:
       - "items.yaml"
   
+  jenkins.yaml: |
+    credentials:
+      system:
+        domainCredentials:
+        - credentials:
+          - azureServicePrincipal:
+              id: "key-vault-principal"
+              subscriptionId: ${sp_subscription}
+              clientId: ${sp_clientid}
+              clientSecret: ${sp_secret}
+              tenantId: ${sp_tenant}
+              scope: SYSTEM
+
   plugin-catalog.yaml: |
     type: "plugin-catalog"
     version: "1" 

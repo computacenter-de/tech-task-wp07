@@ -196,7 +196,37 @@ data:
             domain: democontroller
             livenessPeriodSeconds: 10
             javaOptions: '-XshowSettings:vm -XX:+AlwaysPreTouch -XX:+UseG1GC -XX:+DisableExplicitGC -XX:+ParallelRefProcEnabled -XX:+UseStringDeduplication -Dhudson.slaves.NodeProvisioner.initialDelay=0'
-            yaml: ''
+            yaml: |-
+              ---
+              apiVersion: "apps/v1"
+              kind: "StatefulSet"
+              name: test
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: "jenkins"
+                        env:
+                          - name: "sp_clientid"
+                            valueFrom:
+                              secretKeyRef:
+                                key: clientId
+                                name: service-principal
+                          - name: "sp_tenant"
+                            valueFrom:
+                              secretKeyRef:
+                                key: tenantId
+                                name: service-principal
+                          - name: "sp_subscription"
+                            valueFrom:
+                              secretKeyRef:
+                                key: subscriptionId
+                                name: service-principal
+                          - name: "sp_secret"
+                            valueFrom:
+                              secretKeyRef:
+                                key: clientSecret
+                                name: service-principal
         description: ''
         displayName: Demo Controller
         properties:
