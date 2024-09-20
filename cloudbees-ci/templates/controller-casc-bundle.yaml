@@ -12,8 +12,8 @@ data:
     #   - "jenkins.yaml"
     plugins:
       - "plugins.yaml"
-    # items:
-    #   - "items.yaml"
+    items:
+      - "items.yaml"
 
   # jenkins.yaml: |
   #   jenkins:
@@ -161,76 +161,76 @@ data:
     - id: workflow-step-api
     - id: workflow-support
 
-  # items.yaml: |
-  #   - kind: folder
-  #     name: Backup and Restore
-  #     description: ''
-  #     displayName: Backup and Restore
-  #     items:
-  #     - kind: backupAndRestore
-  #       name: Backup
-  #       blockBuildWhenDownstreamBuilding: false
-  #       blockBuildWhenUpstreamBuilding: false
-  #       buildersList:
-  #       - backupBuilder:
-  #           subjects:
-  #           - buildRecordSubject: {}
-  #           - jobConfigurationSubject: {}
-  #           - systemConfigurationSubject:
-  #               omitMasterKey: true
-  #           format:
-  #             zipFormat: {}
-  #           exclusive: false
-  #           store:
-  #             azureBlobStorageStore:
-  #               folder: ''
-  #               accountName: cloudbees
-  #               containerName: cloudbeesbackup
-  #               credentialsId: BackupStorage
-  #               blobEndPointURL: ''
-  #               useMetadata: false
-  #           retentionPolicy:
-  #             upToNRetentionPolicy:
-  #               n: 3
-  #           safeDelaySeconds: 0
-  #       concurrentBuild: false
-  #       description: ''
-  #       disabled: false
-  #       displayName: Backup
-  #       triggers:
-  #       - cron:
-  #           spec: '@hourly'
-  #     - kind: backupAndRestore
-  #       name: Restore
-  #       blockBuildWhenDownstreamBuilding: false
-  #       blockBuildWhenUpstreamBuilding: false
-  #       buildersList:
-  #       - restoreBuilder:
-  #           ignoreConfirmationFile: true
-  #           preserveJenkinsHome: false
-  #           ignoreDigestCheck: false
-  #           store:
-  #             azureBlobStorageStore:
-  #               folder: ''
-  #               accountName: cloudbees
-  #               containerName: cloudbeesbackup
-  #               credentialsId: BackupStorage
-  #               blobEndPointURL: ''
-  #               useMetadata: false
-  #           restoreDirectory: ''
-  #       concurrentBuild: false
-  #       description: ''
-  #       disabled: false
-  #       displayName: Restore
-  #     properties:
-  #     - envVars: {}
-  #     - itemRestrictions:
-  #         filter: false
-  #     - folderCredentialsProperty:
-  #         folderCredentials:
-  #         - credentials:
-  #           - secretStringCredentials:
-  #               description: ''
-  #               id: 3fef3a43-ba1e-438a-9c81-0204cdfcdabe
-  #               secretIdentifier: https://cariad-wp7.vault.azure.net/secrets/BackupStorage/87ed4f05afe64d0ea9248c32851d9adc
-  #           domain: {}
+  items.yaml: |
+    - kind: folder
+      name: Backup and Restore
+      description: ''
+      displayName: Backup and Restore
+      items:
+      - kind: backupAndRestore
+        name: Backup
+        blockBuildWhenDownstreamBuilding: false
+        blockBuildWhenUpstreamBuilding: false
+        buildersList:
+        - backupBuilder:
+            subjects:
+            - buildRecordSubject: {}
+            - jobConfigurationSubject: {}
+            - systemConfigurationSubject:
+                omitMasterKey: true
+            format:
+              zipFormat: {}
+            exclusive: false
+            store:
+              azureBlobStorageStore:
+                folder: ''
+                accountName: cloudbees
+                containerName: cloudbeesbackup
+                credentialsId: BackupStorage
+                blobEndPointURL: ''
+                useMetadata: false
+            retentionPolicy:
+              upToNRetentionPolicy:
+                n: 3
+            safeDelaySeconds: 0
+        concurrentBuild: false
+        description: ''
+        disabled: false
+        displayName: Backup
+        triggers:
+        - cron:
+            spec: '@hourly'
+      - kind: backupAndRestore
+        name: Restore
+        blockBuildWhenDownstreamBuilding: false
+        blockBuildWhenUpstreamBuilding: false
+        buildersList:
+        - restoreBuilder:
+            ignoreConfirmationFile: true
+            preserveJenkinsHome: false
+            ignoreDigestCheck: false
+            store:
+              azureBlobStorageStore:
+                folder: ''
+                accountName: cloudbees
+                containerName: cloudbeesbackup
+                credentialsId: BackupStorage
+                blobEndPointURL: ''
+                useMetadata: false
+            restoreDirectory: ''
+        concurrentBuild: false
+        description: ''
+        disabled: false
+        displayName: Restore
+      properties:
+      - envVars: {}
+      - itemRestrictions:
+          filter: false
+      - folderCredentialsProperty:
+          folderCredentials:
+          - credentials:
+            - secretStringCredentials:
+                description: ''
+                id: 3fef3a43-ba1e-438a-9c81-0204cdfcdabe
+                secretIdentifier: https://cariad-wp7.vault.azure.net/secrets/BackupStorage/87ed4f05afe64d0ea9248c32851d9adc
+            domain: {}
