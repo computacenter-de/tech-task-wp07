@@ -20,8 +20,8 @@ The deployment will be done in Azure using AKS (Azure Kubernetes Service).
 
 2. Backup the Instance and Validate the Backup
 
-[X] Implement a backup strategy for the Jenkins instance.
-[X] Validate that the backup is complete and can be restored successfully.
+- [X] Implement a backup strategy for the Jenkins instance.
+- [X] Validate that the backup is complete and can be restored successfully.
 
 3. Security Breach Scenario: Master Key Exposure
  - [ ] Make the Instance Unavailable to Others
