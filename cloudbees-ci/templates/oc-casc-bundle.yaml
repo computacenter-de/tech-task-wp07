@@ -31,73 +31,6 @@ data:
     #           password: ${git-pwd}
     #           scope: GLOBAL
     #           username: "sps_openshift"
-    jenkins:
-      agentProtocols:
-      - "Diagnostic-Ping"
-      - "JNLP4-connect"
-      - "OperationsCenter2"
-      - "Ping"
-      authorizationStrategy:
-        loggedInUsersCanDoAnything:
-          allowAnonymousRead: false
-      crumbIssuer:
-        standard:
-          excludeClientIPFromCrumb: false
-      disableRememberMe: false
-      labelAtoms:
-      - name: "built-in"
-      markupFormatter: "plainText"
-      mode: NORMAL
-      myViewsTabBar: "standard"
-      noUsageStatistics: true
-      numExecutors: 2
-      primaryView:
-        masters:
-          columns:
-          - "status"
-          - "weather"
-          - "jobName"
-          - "manageMaster"
-          - "masterConfigurationStaleViewColumn"
-          - "totalJobsViewColumn"
-          - "queueSizeViewColumn"
-          - "jenkinsVersionViewColumn"
-          - "listSelectionColumn"
-          jobFilters:
-          - "connectedMasterViewFilter"
-          name: "Controllers"
-          recurse: true
-      projectNamingStrategy: "standard"
-      quietPeriod: 5
-      remotingSecurity:
-        enabled: true
-      scmCheckoutRetryCount: 0
-      slaveAgentPort: 50000
-      updateCenter:
-        sites:
-        - id: "core-oc-offline"
-          url: "file:/tmp/jenkins/war/WEB-INF/plugins/update-center.json"
-        - id: "cap-core-oc"
-          url: "https://jenkins-updates.cloudbees.com/update-center/envelope-core-oc/update-center.json"
-      views:
-      - masters:
-          columns:
-          - "status"
-          - "weather"
-          - "jobName"
-          - "manageMaster"
-          - "masterConfigurationStaleViewColumn"
-          - "totalJobsViewColumn"
-          - "queueSizeViewColumn"
-          - "jenkinsVersionViewColumn"
-          - "listSelectionColumn"
-          jobFilters:
-          - "connectedMasterViewFilter"
-          name: "Controllers"
-          recurse: true
-      - all:
-          name: "all"
-      viewsTabBar: "standard"
     cloudBeesCasCServer:
       defaultBundle: "demo-bundle"
       disableRemoteValidation: false
@@ -115,12 +48,12 @@ data:
                 localFolder: "/var/casc"
           pollingPeriod: 120
           purgeOnDeactivation: false
-      cascAutoControllerProvisioning:
-        duration: 60
-        fireAndForget: true
-        initialDelay: 15
-        provisionControllerOnCreation: true
-        timeout: 600
+      # cascAutoControllerProvisioning:
+      #   duration: 60
+      #   fireAndForget: true
+      #   initialDelay: 15
+      #   provisionControllerOnCreation: true
+      #   timeout: 600
   
   plugin-catalog.yaml: |
     type: "plugin-catalog"
