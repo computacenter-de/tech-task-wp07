@@ -20,8 +20,8 @@ The deployment will be done in Azure using AKS (Azure Kubernetes Service).
 
 2. Backup the Instance and Validate the Backup
 
-Implement a backup strategy for the Jenkins instance. Validate that the backup
-is complete and can be restored successfully.
+[X] Implement a backup strategy for the Jenkins instance.
+[X] Validate that the backup is complete and can be restored successfully.
 
 3. Security Breach Scenario: Master Key Exposure
  - [ ] Make the Instance Unavailable to Others
@@ -74,7 +74,7 @@ Principal only gets READ-only rights and only from the controller. This would
 mean that each development team would be assigned one Azure Service Principal
 per Jenkins, including its own Azure KeyVault.
 
-This was not requested in the ‘Tech Task’. Was implemented by us with minimal
+This was not requested in the ‘Tech Task’ but was implemented by us with minimal
 effort. In order to map the tasks (although they certainly involve a great
 security risk from our point of view), for example, we store a simple secret in
 the Jenkins Credentials Store of the respective controller.
@@ -92,7 +92,171 @@ effort. More about this here:
 
 ### 2. Backup the Instance and Validate the Backup
 
+Backing up CloudBees CI involves taking care of Jenkins home directories,
+configurations, and other important data. Once the backup is completed,
+validating it by testing restoration in a separate environment ensures that the
+backup is reliable and can be used in a real disaster recovery situation.
+
+CloudBees provides a Backup Plugin that can automate regular backups of the
+Jenkins home directory and other necessary files. OSS doesn't provide that
+plugin based backup approach.
+
+The following supported way was implemented by us. You can all find details here:
 https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-backup-plugin
+https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/restoring-from-backup-plugin
+https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/kubernetes
+
+
+#### Implement a backup strategy for the Jenkins instance.
+
+As described above, we follow the recommended and supported path.  We have set
+up a ‘Backup & Restore’ job. In our case, we performed a backup ‘every hour’.
+(This can be customised from use case to use case. Even before each build, for
+example).
+
+To store the backups, we use Azure Blob Storage where access is carried out via
+credential.
+
+This ‘Backup & Restore’ was set up by us manually, but can be stored as code
+and automatically forced and rolled out on all controllers (Jenkins Team
+Instants).
+
+Our "Backup & Restore" folder as code:
+
+```yaml
+kind: folder
+name: Backup and Restore
+description: ''
+displayName: Backup and Restore
+items:
+- kind: backupAndRestore
+  name: Backup
+  blockBuildWhenDownstreamBuilding: false
+  blockBuildWhenUpstreamBuilding: false
+  buildersList:
+  - backupBuilder:
+      subjects:
+      - buildRecordSubject: {
+          }
+      - jobConfigurationSubject: {
+          }
+      - systemConfigurationSubject:
+          omitMasterKey: true
+      format:
+        zipFormat: {
+          }
+      exclusive: false
+      store:
+        azureBlobStorageStore:
+          folder: ''
+          accountName: cloudbees
+          containerName: cloudbeesbackup
+          credentialsId: BackupStorage
+          blobEndPointURL: ''
+          useMetadata: false
+      retentionPolicy:
+        upToNRetentionPolicy:
+          n: 3
+      safeDelaySeconds: 0
+  concurrentBuild: false
+  description: ''
+  disabled: false
+  displayName: Backup
+  triggers:
+  - cron:
+      spec: '@hourly'
+- kind: backupAndRestore
+  name: Restore
+  blockBuildWhenDownstreamBuilding: false
+  blockBuildWhenUpstreamBuilding: false
+  buildersList:
+  - restoreBuilder:
+      ignoreConfirmationFile: true
+      preserveJenkinsHome: false
+      ignoreDigestCheck: false
+      store:
+        azureBlobStorageStore:
+          folder: ''
+          accountName: cloudbees
+          containerName: cloudbeesbackup
+          credentialsId: BackupStorage
+          blobEndPointURL: ''
+          useMetadata: false
+      restoreDirectory: ''
+  concurrentBuild: false
+  description: ''
+  disabled: false
+  displayName: Restore
+- kind: pipeline
+  name: hello-world-pipeline
+  concurrentBuild: true
+  definition:
+    cpsFlowDefinition:
+      sandbox: true
+      script: |-
+        pipeline {
+            agent {
+                kubernetes {
+                    yaml """
+                    apiVersion: v1
+                    kind: Pod
+                    spec:
+                      containers:
+                      - name: maven
+                        image: maven:3.9.9-eclipse-temurin-21-alpine
+                        command:
+                        - cat
+                        tty: true
+                    """
+                }
+            }
+            stages {
+                stage('Build') {
+                    steps {
+                        container('maven') {
+                            sh 'mvn --version'
+                        }
+                    }
+                }
+            }
+        }
+  description: ''
+  disabled: false
+  displayName: hello-world-pipeline
+  resumeBlocked: false
+properties:
+- envVars: {
+    }
+- itemRestrictions:
+    filter: false
+- folderCredentialsProperty:
+    folderCredentials:
+    - credentials:
+      - secretStringCredentials:
+          description: ''
+          id: XXXXXXXXXXXX-ba1e-438a-9c81-XXXXXXXXXX
+          secretIdentifier: https://XXXXXXXXXXXX.vault.azure.net/secrets/BackupStorage/XXXXXXXXXXXXXXXXXXXx
+      domain: {
+        }
+````
+
+#### Validate that the backup is complete and can be restored successfully.
+
+Since the backup and restore process is performed by the supported CloudBees
+plugin and is always visible through the jobs in the folder, we can be sure that
+if the backup job has run and completed successfully, the backup is
+successful. The same applies to the restore process.
+
+We have tested this several times on our AKS setup. And it is a simple task:
+
+1) Activate backup in the pipeline manually or it is executed every hour as we do
+2) To restore, simply execute the ‘Restore’ job. In our case, the last backup is used.
+3) Restart the controller and you're done.
+
+Excluding files from a restore job is also possible. Is is important for the next task.
+
+https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-backup-plugin
+
 
 ### 3. Security Breach Scenario: Master Key Exposure
 
