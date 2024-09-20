@@ -7,7 +7,7 @@ data:
     apiVersion: "1"
     id: "demo-bundle"
     description: "Default Bundle for all Teams"
-    version: "1.10"
+    version: "1.11"
     itemRemoveStrategy:
       items: "none"
     rbacRemoveStrategy: "sync"
