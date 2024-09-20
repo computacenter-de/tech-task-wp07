@@ -14,8 +14,8 @@ data:
       - "plugin-catalog.yaml"
     plugins:
       - "plugins.yaml"
-    # items:
-    #   - "items.yaml"
+    items:
+      - "items.yaml"
 
   jenkins.yaml: |
     jenkins:
