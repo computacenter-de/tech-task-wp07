@@ -29,7 +29,7 @@ cloudbees-core:
     # Configuration as Code (CasC) for Operations Center.
     CasC:
       # OperationsCenter.CasC.Enabled -- enable or disable CasC for Operations Center.
-      Enabled: false
+      Enabled: true
       # OperationsCenter.CasC.ConfigMapName -- the name of the ConfigMap used to configure Operations Center.
       # Note: this property can point to a ConfigMap defined in OperationsCenter.ExtraConfigMaps,
       # or any ConfigMap that exists in the cluster.
