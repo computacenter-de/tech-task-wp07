@@ -51,14 +51,14 @@ through the features of an enterprise solution.
 Our approach is to provide everything as code and automate as much as possible.
 For this task, we have chosen to set up the Azure infrastructure AKS with
 Terraform. We decided to adopt ArgoCD for the central deployment of the
-[CloudBees Operation Centre](https://docs.cloudbees.com/docs/cloudbees-ci/latest/architecture/ci-cloud).
+[CloudBees Operation Center](https://docs.cloudbees.com/docs/cloudbees-ci/latest/architecture/ci-cloud).
 The CloudBees controllers (Jenkins instances for the teams) can be automated or provisioned with a mouse click. However, we also
-wanted to take the GitOps approach for the CloudBees Operation Centre.
+wanted to take the GitOps approach for the CloudBees Operation Center.
 
 The following diagram shows how the architecture works and how the controllers
 (Jenkins team instances) are provisioned, configured and controlled by the
-CloudBees Operation Centre.
-![CloudBees Operation Centre AKS Overview](./images/cbci-overview.png)
+CloudBees Operation Center.
+![CloudBees Operation Center AKS Overview](./images/cbci-overview.png)
 
 
 Many software systems use secret data for authentication, e.g. user passwords,
@@ -70,9 +70,10 @@ directly compromised.
 
 Our approach was to use an Azure KeyVault to manage the important credentials
 that can be accessed via an Azure Service Principal. This Azure Service
-Principal only gets READ-only rights and only from the controller. This would
-mean that each development team would be assigned one Azure Service Principal
-per Jenkins, including its own Azure KeyVault.
+Principal only gets READ-only rights and only from the controller and is stored
+in the Operation Center ONLY. This would mean that each development team would
+be assigned one Azure Service Principal per Jenkins, including its own Azure
+KeyVault.
 
 This was not requested in the ‘Tech Task’ but was implemented by us with minimal
 effort. In order to map the tasks (although they certainly involve a great
@@ -253,7 +254,9 @@ We have tested this several times on our AKS setup. And it is a simple task:
 2) To restore, simply execute the ‘Restore’ job. In our case, the last backup is used.
 3) Restart the controller and you're done.
 
-Excluding files from a restore job is also possible. Is is important for the next task.
+**TODO** der überprüft checksum...
+
+Excluding files from a backup job is also possible. Is is important for the next task "Security Breach Scenario: Master Key Exposure".
 
 https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-backup-plugin
 
@@ -261,19 +264,102 @@ https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-bac
 ### 3. Security Breach Scenario: Master Key Exposure
 
 #### Make the Instance Unavailable to Others
+
 ##### Scale down the Jenkins deployment to zero replicas.
+It can be achived using kubectl. This apprapch is quite similar to OSS Jenkins.
+```bash
+# kubectl scale statefulset <NAME> --replicas=0 --n <xxxxxxx>
+$ kubectl get statefulset.apps -n cloudbeesci
+NAME                   READY   AGE
+cjoc                   1/1     40h
+democontroller         1/1     17h
+rsadowski-playground   1/1     23h
+test                   1/1     46m
+
+$ kubectl scale statefulset democontroller --replicas=0 --n cloudbeesci
+
+```
 ##### Alternatively, remove the route to the Jenkins service or block access using a proxy.
+Alternatively, the controller can be shutdown from the Operation Center (OC-> Manage Controller -> Deprovision).
+Alternatively, the user permissions can be modified to deny access (using our RBAC capability)
+Alternatively, the ingress to the controller can be modify by removing the destiantion path.
+
+```bash
+kubectl get ingress democontroller -n cloudbeesci -o yaml > ingress.yaml
+# ... edit the destination path
+# One-liner
+kubectl get ingress democontroller -n cloudbeesci -o json \
+  | jq 'del(.metadata.resourceVersion, .metadata.uid, .metadata.annotations["kubectl.kubernetes.io/last-applied-configuration"], .status)
+        | .spec.rules[].http.paths[].path = "/NEW-PATH-TO-NOWHERE/"' \
+  | kubectl apply -f -
+```
+We will delete the controller anyway as it is no longer trustworthy.
 
 ### Rotate the Master Key
 
+The master key is usually rotated by deleting the `master.key` and restarting the
+controller. Here is our procedure.
+
 #### Generate a new master key for Jenkins.
 #### Update the Jenkins configuration with the new master key.
-#### Re-encrypt All Credentials
+
+First of all we delete the controller in the Operation Center by one click.
+With the second click we create a new Controller with the same name. 
+
+Because our blueprint for the controller is stored in the CaaC (Configuration
+as Code for controllers) and this contains the backup & restore folder with the
+jobs and gets the Azure Service Principal Credeatails from the operator (these
+were not compromised because they are only contained in the Operation Center
+and are ONLY used at runtime in the controller AND are not stored there), we
+can restore the last non-compromised backup there!
+
+If we know that the credentials from the Key Vault have also been compromised,
+they must be changed there.
+
+
+ > Configuration as Code for controllers simplifies the management of a
+ > CloudBees CI cluster by capturing the configuration of CloudBees CI controllers
+ > in human-readable declarative configuration files which can then be applied to
+ > a controller in a reproducible way.
+
+In the diagram below you can see how the "CaaC" works. The corresponding code
+for our example can be found at [CloudBees Operation + CaaC Helm
+Chart](cloudbees-ci).
+
+![Configuration as Code for controllers](./images/controller-intro.0d638c1.png)
+
+
+### Re-encrypt All Credentials
 #### Re-encrypt all stored credentials in Jenkins using the new master key.
 
+If a team has stored sensitive data in the credentials store on its controller,
+this will be restored during the restore process. However, the content  is
+completely useless as it is read with the new `master.key`. This MUST be reset by
+the team. We have no automatic process here as it is assumed that all data has
+been compromised and will be reset accordingly. The old data should not and
+must not be used any more.
+
 ### Make the Instance Available to Others
-#### Scale the Jenkins deployment back up.
+```bash
+# kubectl scale statefulset <NAME> --replicas=1 --n <xxxxxxx>
+$ kubectl get statefulset.apps -n cloudbeesci
+NAME                   READY   AGE
+cjoc                   1/1     40h
+democontroller         1/1     17h
+rsadowski-playground   1/1     23h
+test                   1/1     46m
+
+$ kubectl scale statefulset democontroller --replicas=1 --n cloudbeesci
+
+```
 #### Restore the route to the Jenkins service or unblock access via the proxy.
+
+We deleted the controller. This also automatically deleted the Ingress entry.
+When a new controller was created, it was recreated and should be accessible
+again.
 
 ### Validate that the Jobs are Still Working
 #### Ensure all dummy jobs are functioning correctly after the security changes.
+
+As described above, this is provided by CloudBees Backup & Restore Plugin. The
+method we tested was described above.
