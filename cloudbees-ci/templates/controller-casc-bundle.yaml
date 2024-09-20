@@ -32,6 +32,10 @@ data:
   #         gracePeriod: 40000
   
   plugin-catalog.yaml: |
+    type: "plugin-catalog"
+    version: "1" 
+    name: "azure-plugin-catalog"
+    displayName: "Azure Plugin Catalog"
     configurations:
     - description: Exported plugins
       includePlugins:
