@@ -8,10 +8,10 @@ data:
     id: "jenkins"
     description: "Bundle for Operation Center"
     version: "1.1"
-    itemRemoveStrategy:
-      items: "none"
-      rbac: "sync"
-    rbacRemoveStrategy: "sync"
+    # itemRemoveStrategy:
+    #   items: "none"
+    #   rbac: "sync"
+    # rbacRemoveStrategy: "sync"
     jcasc:
       - "jenkins.yaml"
     catalog:
