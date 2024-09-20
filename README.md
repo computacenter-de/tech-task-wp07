@@ -32,11 +32,11 @@ The deployment will be done in Azure using AKS (Azure Kubernetes Service).
    - [ ]  Update the Jenkins configuration with the new master key.
  - [ ] Re-encrypt All Credentials
    - [ ] Re-encrypt all stored credentials in Jenkins using the new master key.
-- [ ] Make the Instance Available to Others
-  - [ ] Scale the Jenkins deployment back up.
-  - [ ] Restore the route to the Jenkins service or unblock access via the proxy.
-- [ ] Validate that the Jobs are Still Working
-  - [ ] Ensure all dummy jobs are functioning correctly after the security changes.
+ - [ ] Make the Instance Available to Others
+   - [ ] Scale the Jenkins deployment back up.
+   - [ ] Restore the route to the Jenkins service or unblock access via the proxy.
+ - [ ] Validate that the Jobs are Still Working
+   - [ ] Ensure all dummy jobs are functioning correctly after the security changes.
 
 ## Our apporch:
 
@@ -260,3 +260,20 @@ https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-bac
 
 ### 3. Security Breach Scenario: Master Key Exposure
 
+#### Make the Instance Unavailable to Others
+##### Scale down the Jenkins deployment to zero replicas.
+##### Alternatively, remove the route to the Jenkins service or block access using a proxy.
+
+### Rotate the Master Key
+
+#### Generate a new master key for Jenkins.
+#### Update the Jenkins configuration with the new master key.
+#### Re-encrypt All Credentials
+#### Re-encrypt all stored credentials in Jenkins using the new master key.
+
+### Make the Instance Available to Others
+#### Scale the Jenkins deployment back up.
+#### Restore the route to the Jenkins service or unblock access via the proxy.
+
+### Validate that the Jobs are Still Working
+#### Ensure all dummy jobs are functioning correctly after the security changes.
