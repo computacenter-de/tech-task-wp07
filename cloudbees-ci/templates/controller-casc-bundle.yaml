@@ -25,13 +25,15 @@ data:
       system:
         domainCredentials:
         - credentials:
-          - azureServicePrincipal:
-              id: "key-vault-principal"
-              subscriptionId: ${sp_subscription}
+          - azureCredentials:
+              azureEnvironmentName: Azure
               clientId: ${sp_clientid}
+              certificateId: ''
+              description: ''
               clientSecret: ${sp_secret}
-              tenantId: ${sp_tenant}
-              scope: SYSTEM
+              id: key-vault-sp
+              subscriptionId: ${sp_subscription}
+              tenant: ${sp_tenant}
 
   plugin-catalog.yaml: |
     type: "plugin-catalog"
