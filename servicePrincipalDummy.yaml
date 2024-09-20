@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: service-principal-dummy
+data:
+  subscriptionId: {{ "encoded string" | b64enc }}
+  clientId: {{ "encoded string" | b64enc }}
+  tenantId: {{ "encoded string" | b64enc }}
+  clientSecret: {{ "encoded string" | b64enc }}
+# This is a secret which was created manually for the demo purposes (in real life to be handled via azure key vault integration, sealed secrets, ...)
+# This secret is consumed by the controller via casc to set the initial service principal for key vault access

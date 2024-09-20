@@ -144,6 +144,9 @@ cloudbees-core:
       - name: controller-casc
         configMap:
           name: controller-casc-bundle
+      - name: service-principal
+        secret:
+          secretName: service-principal
 
     # OperationsCenter.ExtraVolumeMounts -- Extra volume mounts to add to the container containing Operations Center
     ExtraVolumeMounts:
@@ -154,6 +157,10 @@ cloudbees-core:
       - name: controller-casc
         mountPath: /var/casc/demo-bundle
         readOnly: false
+      - name: service-principal
+        mountPath: /run/secrets/service-principal
+        subPath: service-principal
+        readOnly: true
   # Controller options
   Master:
     # Master.Enabled -- Whether to create the resources required to schedule controllers.
