@@ -20,7 +20,7 @@ data:
   jenkins.yaml: |
     jenkins:
       systemMessage: "Operations center configured using CloudBees CasC"
-      authorizationStrategy: "cloudBeesRoleBasedAccessControl"
+      authorizationStrategy: "unsecured"
     cloudBeesCasCServer:
       defaultBundle: "demo-bundle"
       disableRemoteValidation: false
