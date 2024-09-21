@@ -195,7 +195,7 @@ data:
       rbac: "sync"
     items:
     - kind: pipeline
-      name: MySecretPipeline
+      name: VerificationPipeline
       concurrentBuild: true
       definition:
         cpsFlowDefinition:
@@ -221,7 +221,7 @@ data:
                     }
                     stage('Aufgabe 4 - Secret ausgeben') {
                         steps {
-                            withCredentials([string(credentialsId: 'mein-secret', variable: 'MEIN_SECRET')]) {
+                            withCredentials([string(credentialsId: 'BackupVerification', variable: 'MEIN_SECRET')]) {
                                 echo "Das Secret ist: ${MEIN_SECRET}"
                             }
                         }
