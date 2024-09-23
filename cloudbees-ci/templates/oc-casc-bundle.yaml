@@ -28,6 +28,27 @@ data:
     masterprovisioning:
       kubernetes:
         disk: 5
+    kube:
+      podTemplatesConfiguration:
+        templates:
+        - containers:
+          - args: "9999999"
+            command: "sleep"
+            image: "alpine"
+            livenessProbe:
+              failureThreshold: 0
+              initialDelaySeconds: 0
+              periodSeconds: 0
+              successThreshold: 0
+              timeoutSeconds: 0
+            name: "DemoAgent"
+            workingDir: "/home/jenkins/agent"
+          id: "651def12-4ac5-4af3-a19a-5b795fdd8645"
+          idleMinutes: 3
+          idleMinutesStr: "3"
+          name: "DemoAgent"
+          nodeUsageMode: "NORMAL"
+          yamlMergeStrategy: "override"
     unclassified:
       bundleStorageService:
           activated: true
