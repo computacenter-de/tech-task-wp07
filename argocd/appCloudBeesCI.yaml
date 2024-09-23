@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: git@github.com:computacenter-de/tech-task-wp07.git
-    targetRevision: feature/cloudbees_ci
+    targetRevision: main
     path: ./cloudbees-ci
 
   destination:
