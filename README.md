@@ -54,7 +54,7 @@ on-premise or in the public cloud used to deliver CI at scale. It provides a
 shared, centrally managed, self-service experience for all your development
 teams running Jenkins. CloudBees CI on modern cloud platforms is designed to
 run on Kubernetes. CloudBees CI on traditional platforms has been developed for
-on-premise installations. I includes the following features:
+on-premise installations. It includes the following features:
 
 - **Jenkins (HA-setup):** CloudBees CI provides built-in high-availability (HA)
 configurations, reducing the complexity and effort required to maintain a
@@ -127,9 +127,9 @@ granted read-only rights and is accessible only from the controller. It is
 stored in a Kubernetes secret an loaded during controller provisioning.
 
 Although this was not requested in the technical task, we implemented it with
-minimal effort. To meet the task requirements (even though we believe they pose
-a significant security risk), we, for example, store a simple secret in the
-Jenkins Credentials Store of the respective controller.
+minimal effort. To meet the requirement of rotating the master key (even though we
+believe this poses a significant security risk), we, for example, store a simple
+secret in the Jenkins Credentials Store of the respective controller.
 
 Below is an example image of this setup, which we partially implemented.
 
@@ -153,9 +153,10 @@ Jenkins home directory and other necessary files. Open Source Jenkins doesn't
 provide that plugin based backup approach.
 
 The following supported way was implemented by us. You can all find details here:
-https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-backup-plugin
-https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/restoring-from-backup-plugin
-https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/kubernetes
+
+* [Backup Plugin Documentation](https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-backup-plugin)
+* [Restoring from a Backup](https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/restoring-from-backup-plugin)
+* [Backup and Restore in Kubernetes](https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/kubernetes)
 
 #### Implement a backup strategy for the Jenkins instance.
 
@@ -263,12 +264,12 @@ successful. The same applies to the restore process.
 
 We have tested this several times on our AKS setup. And it is a simple task:
 
-1) Activate backup in the pipeline manually or it is executed every hour as we do
+1) Activate the backup in the pipeline manually, otherwise it is executed every hour as in our setup.
 2) To restore, simply execute the ‘Restore’ job. In our case, the last backup is used.
 3) Restart the controller and you're done.
-4) (To proof it you can run the automatically deployed verification pipeline (CasC) which is connecting to the azure key vault and reading a dummy secret.)
+4) (To proof it you can run the automatically deployed verification pipeline (CasC) which connetcs to the azure key vault and reads a dummy secret.)
 
-The backup restore job itself is verifying the integrity of the backup during restore by validating a checksum.
+The backup restore job itself verifies the integrity of the backup during restore by validating a checksum.
 
 Excluding files from a backup job is also possible. Is is important for the next task "Security Breach Scenario: Master Key Exposure".
 
