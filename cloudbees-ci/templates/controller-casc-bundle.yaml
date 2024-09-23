@@ -1,0 +1,306 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: controller-casc-bundle
+data:
+  bundle.yaml: |
+    apiVersion: "1"
+    id: "demo-bundle"
+    description: "Default Bundle for all Teams"
+    version: "1.11"
+    itemRemoveStrategy:
+      items: "none"
+    rbacRemoveStrategy: "sync"
+    jcasc:
+      - "jenkins.yaml"
+    catalog:
+      - "plugin-catalog.yaml"
+    plugins:
+      - "plugins.yaml"
+    items:
+      - "items.yaml"
+  
+  jenkins.yaml: |
+    credentials:
+      system:
+        domainCredentials:
+        - credentials:
+          - azureCredentials:
+              azureEnvironmentName: Azure
+              clientId: ${sp_clientid}
+              certificateId: ''
+              description: ''
+              clientSecret: ${sp_secret}
+              id: key-vault-sp
+              subscriptionId: ${sp_subscription}
+              tenant: ${sp_tenant}
+    unclassified:
+      azureKeyVault:
+        credentialID: "key-vault-sp"
+        keyVaultURL: "https://cariad-wp7.vault.azure.net/"
+
+  plugin-catalog.yaml: |
+    type: "plugin-catalog"
+    version: "1" 
+    name: "azure-plugin-catalog"
+    displayName: "Azure Plugin Catalog"
+    configurations:
+    - description: Exported plugins
+      includePlugins:
+        azure-credentials:
+          version: 254.v64da_8176c83a
+        azure-keyvault:
+          version: 193.vdc33a_680fef6
+        azure-sdk:
+          version: 132.v62b_48eb_6f32f
+
+  plugins.yaml: |
+    plugins:
+    - id: ace-editor
+    - id: apache-httpcomponents-client-4-api
+    - id: authentication-tokens
+    - id: aws-credentials
+    - id: aws-java-sdk-ec2
+    - id: aws-java-sdk-minimal
+    - id: azure-credentials
+    - id: azure-keyvault
+    - id: azure-sdk
+    - id: blueocean-commons
+    - id: bootstrap5-api
+    - id: bouncycastle-api
+    - id: branch-api
+    - id: caffeine-api
+    - id: checks-api
+    - id: cloudbees-administrative-monitors
+    - id: cloudbees-analytics
+    - id: cloudbees-assurance
+    - id: cloudbees-blueocean-default-theme
+    - id: cloudbees-casc-client
+    - id: cloudbees-casc-items-api
+    - id: cloudbees-casc-items-commons
+    - id: cloudbees-casc-items-controller
+    - id: cloudbees-folder
+    - id: cloudbees-folders-plus
+    - id: cloudbees-github-reporting
+    - id: cloudbees-groovy-view
+    - id: cloudbees-jenkins-advisor
+    - id: cloudbees-license
+    - id: cloudbees-monitoring
+    - id: cloudbees-nodes-plus
+    - id: cloudbees-platform-common
+    - id: cloudbees-platform-data
+    - id: cloudbees-plugin-usage
+    - id: cloudbees-ssh-slaves
+    - id: cloudbees-support
+    - id: cloudbees-template
+    - id: cloudbees-uc-data-api
+    - id: cloudbees-unified-ui
+    - id: cloudbees-view-creation-filter
+    - id: cloudbees-workflow-template
+    - id: cloudbees-workflow-ui
+    - id: command-launcher
+    - id: commons-lang3-api
+    - id: commons-text-api
+    - id: credentials
+    - id: credentials-binding
+    - id: display-url-api
+    - id: durable-task
+    - id: echarts-api
+    - id: email-ext
+    - id: font-awesome-api
+    - id: git
+    - id: git-client
+    - id: github
+    - id: github-api
+    - id: github-branch-source
+    - id: gradle
+    - id: handy-uri-templates-2-api
+    - id: infradna-backup
+    - id: instance-identity
+    - id: ionicons-api
+    - id: jackson2-api
+    - id: jakarta-activation-api
+    - id: jakarta-mail-api
+    - id: javax-activation-api
+    - id: javax-mail-api
+    - id: jaxb
+    - id: jdk-tool
+    - id: jjwt-api
+    - id: jquery3-api
+    - id: junit
+    - id: kube-agent-management
+    - id: kubernetes
+    - id: kubernetes-client-api
+    - id: kubernetes-credentials
+    - id: ldap
+    - id: mailer
+    - id: mapdb-api
+    - id: matrix-project
+    - id: metrics
+    - id: mina-sshd-api-common
+    - id: mina-sshd-api-core
+    - id: mina-sshd-api-scp
+    - id: mina-sshd-api-sftp
+    - id: nectar-license
+    - id: nectar-rbac
+    - id: node-iterator-api
+    - id: oauth-credentials
+    - id: okhttp-api
+    - id: operations-center-agent
+    - id: operations-center-client
+    - id: operations-center-cloud
+    - id: operations-center-context
+    - id: pipeline-build-step
+    - id: pipeline-graph-analysis
+    - id: pipeline-groovy-lib
+    - id: pipeline-input-step
+    - id: pipeline-milestone-step
+    - id: pipeline-model-api
+    - id: pipeline-model-definition
+    - id: pipeline-model-extensions
+    - id: pipeline-rest-api
+    - id: pipeline-stage-step
+    - id: pipeline-stage-tags-metadata
+    - id: pipeline-stage-view
+    - id: plain-credentials
+    - id: plugin-util-api
+    - id: popper2-api
+    - id: scm-api
+    - id: script-security
+    - id: snakeyaml-api
+    - id: ssh-credentials
+    - id: sshd
+    - id: structs
+    - id: support-core
+    - id: token-macro
+    - id: trilead-api
+    - id: unique-id
+    - id: user-activity-monitoring
+    - id: variant
+    - id: workflow-aggregator
+    - id: workflow-api
+    - id: workflow-basic-steps
+    - id: workflow-cps
+    - id: workflow-cps-checkpoint
+    - id: workflow-durable-task-step
+    - id: workflow-job
+    - id: workflow-multibranch
+    - id: workflow-scm-step
+    - id: workflow-step-api
+    - id: workflow-support
+
+  items.yaml: |
+    removeStrategy:
+      items: "none"
+      rbac: "sync"
+    items:
+    - kind: pipeline
+      name: VerificationPipeline
+      concurrentBuild: true
+      definition:
+        cpsFlowDefinition:
+          sandbox: true
+          script: |-
+            pipeline {
+                agent any
+                stages {
+                    stage('Aufgabe 1') {
+                        steps {
+                            echo 'Dies ist Aufgabe 1'
+                        }
+                    }
+                    stage('Aufgabe 2') {
+                        steps {
+                            echo 'Dies ist Aufgabe 2'
+                        }
+                    }
+                    stage('Aufgabe 3') {
+                        steps {
+                            echo 'Dies ist Aufgabe 3'
+                        }
+                    }
+                    stage('Aufgabe 4 - Secret ausgeben') {
+                        steps {
+                            withCredentials([string(credentialsId: 'BackupVerification', variable: 'MEIN_SECRET')]) {
+                                echo "Das Secret ist: ${MEIN_SECRET}"
+                            }
+                        }
+                    }
+                }
+            }
+      description: ''
+      disabled: false
+      displayName: MySecretPipeline
+      resumeBlocked: false
+    - kind: folder
+      name: Backup and Restore
+      description: ''
+      displayName: Backup and Restore
+      items:
+      - kind: backupAndRestore
+        name: Backup
+        blockBuildWhenDownstreamBuilding: false
+        blockBuildWhenUpstreamBuilding: false
+        buildersList:
+        - backupBuilder:
+            subjects:
+            - buildRecordSubject: {}
+            - jobConfigurationSubject: {}
+            - systemConfigurationSubject:
+                omitMasterKey: true
+            format:
+              zipFormat: {}
+            exclusive: false
+            store:
+              azureBlobStorageStore:
+                folder: ''
+                accountName: cloudbees
+                containerName: cloudbeesbackup
+                credentialsId: BackupStorage
+                blobEndPointURL: ''
+                useMetadata: false
+            retentionPolicy:
+              upToNRetentionPolicy:
+                n: 3
+            safeDelaySeconds: 0
+        concurrentBuild: false
+        description: ''
+        disabled: false
+        displayName: Backup
+        triggers:
+        - cron:
+            spec: '@hourly'
+      - kind: backupAndRestore
+        name: Restore
+        blockBuildWhenDownstreamBuilding: false
+        blockBuildWhenUpstreamBuilding: false
+        buildersList:
+        - restoreBuilder:
+            ignoreConfirmationFile: true
+            preserveJenkinsHome: false
+            ignoreDigestCheck: false
+            store:
+              azureBlobStorageStore:
+                folder: ''
+                accountName: cloudbees
+                containerName: cloudbeesbackup
+                credentialsId: BackupStorage
+                blobEndPointURL: ''
+                useMetadata: false
+            restoreDirectory: ''
+        concurrentBuild: false
+        description: ''
+        disabled: false
+        displayName: Restore
+      properties:
+      - envVars: {}
+      - itemRestrictions:
+          filter: false
+      - folderCredentialsProperty:
+          folderCredentials:
+          - credentials:
+            - secretStringCredentials:
+                description: ''
+                id: 3fef3a43-ba1e-438a-9c81-0204cdfcdabe
+                secretIdentifier: https://cariad-wp7.vault.azure.net/secrets/BackupStorage/87ed4f05afe64d0ea9248c32851d9adc
+            domain: {}
