@@ -15,7 +15,7 @@ The deployment will be done in Azure using AKS (Azure Kubernetes Service).
     - [AKS setup README](aks/README.md)
  - [X] Deploy a Jenkins instance on the AKS cluster.
     - [Argo CD setup README](argocd/README.md)
-    - [CloudBees setup README](cloudbees-ci/README.md)
+    - [CloudBees](cloudbees-ci)
  - [X] Create several dummy jobs in Jenkins to simulate a real environment.
 
 2. Backup the Instance and Validate the Backup
