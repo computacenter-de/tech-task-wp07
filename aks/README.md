@@ -103,8 +103,3 @@ https://learn.microsoft.com/en-us/azure/aks/static-ip
 - **RBAC & AAD**: RBAC is enabled with Azure Active Directory integration for enhanced authentication and authorization.
 - **Azure Container Registry (ACR)**: The AKS cluster is integrated with an ACR to securely pull container images.
 - **Storage Class**: A default storage class using Azure Premium disks is defined to support high-performance workloads like CloudBees CI.
-
-## AKS Steup Conclusion and notes
-
-tbd
-
