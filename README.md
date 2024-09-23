@@ -47,6 +47,57 @@ demonstrate this through this task. Our goal is to reduce implementation and
 operational effort while increasing security by leveraging the features of an
 enterprise solution.
 
+### CloudBees CI
+
+CloudBees CI is a fully-featured, cloud native capability that can be hosted
+on-premise or in the public cloud used to deliver CI at scale. It provides a
+shared, centrally managed, self-service experience for all your development
+teams running Jenkins. CloudBees CI on modern cloud platforms is designed to
+run on Kubernetes. CloudBees CI on traditional platforms has been developed for
+on-premise installations. I includes the following features:
+
+- **Jenkins (HA-setup):** CloudBees CI provides built-in high-availability (HA)
+configurations, reducing the complexity and effort required to maintain a
+resilient Jenkins environment.
+
+- **On-prem and cloud-based setup:** CloudBees CI seamlessly integrates with
+both on-premises and cloud environments, simplifying the management and
+scalability of hybrid setups.
+
+- **Jenkins instances interconnection and workload shifting:** The platform
+allows for easier interconnection of Jenkins instances and automated workload
+shifting, ensuring optimal performance and resource utilization.
+
+- **Plugin management, approval, lifecycle:** CloudBees CI automates plugin
+lifecycle management, from approval to updates, significantly reducing manual
+intervention and potential errors.
+
+- **Feature implementation:** With CloudBees CI, new features can be
+implemented more quickly and reliably, supported by enterprise-level tools and
+best practices that minimize downtime.
+
+- **Technical meetings with tool supplier:** The comprehensive support provided
+by CloudBees CI reduces the need for frequent technical meetings, as issues are
+resolved more efficiently through the platform’s robust features.
+
+- **Data synchronization:** CloudBees CI includes advanced data synchronization
+tools that ensure consistency across all Jenkins instances, improving data
+integrity and reducing manual synchronization efforts.
+
+- **Archiving CSD, class, etc.:** Automated archiving features within CloudBees
+CI help maintain compliance and data retention standards with minimal manual
+intervention.
+
+- **Backup & disaster recovery:** CloudBees CI’s integrated backup and disaster
+recovery capabilities offer enhanced protection and quick recovery options,
+reducing the risk of data loss and service interruptions.
+
+- **3rd level support:** The enterprise support provided by CloudBees CI,
+combined with our certified experts, minimizes the need for extensive
+third-level support, ensuring faster resolution of issues.
+
+For a detailed comparison of enterprise CloudBees CI features versus Open
+Source Jenkins, please refer to [CB-CI-Jenkins-Comparison-2023.pdf](pdf/CB-CI-Jenkins-Comparison-2023.pdf).
 
 ### 1. Create a Jenkins Instance with Dummy Jobs on Kubernetes
 
