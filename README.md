@@ -60,7 +60,7 @@ provisioned with a mouse click. However, we also wanted to take the GitOps
 approach for the CloudBees Operations Center.
 
 The following diagram illustrates the architecture and how the controllers
-(Jenkins team instances) are provisioned, configured, and managed by the
+(Jenkins team instance/instances) are provisioned, configured, and managed by the
 CloudBees Operations Center.
 
 ![CloudBees Operation Center AKS Overview](./images/cbci-overview.png)
@@ -229,7 +229,7 @@ https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-bac
 #### Make the Instance Unavailable to Others
 
 ##### Scale down the Jenkins deployment to zero replicas.
-It can be achived using kubectl. This apprapch is quite similar to OSS Jenkins.
+It can be achieved  using kubectl. This approach is quite similar to Open Source Jenkins.
 ```bash
 # kubectl scale statefulset <NAME> --replicas=0 --n <xxxxxxx>
 $ kubectl get statefulset.apps -n cloudbeesci
@@ -243,9 +243,12 @@ $ kubectl scale statefulset democontroller --replicas=0 --n cloudbeesci
 
 ```
 ##### Alternatively, remove the route to the Jenkins service or block access using a proxy.
-Alternatively, the controller can be shutdown from the Operation Center (OC-> Manage Controller -> Deprovision).
-Alternatively, the user permissions can be modified to deny access (using our RBAC capability)
-Alternatively, the ingress to the controller can be modify by removing the destiantion path.
+
+Depending on which forensic methods are to be used where, the following options can be carried out.
+
+Option 1, the controller can be shutdown from the Operation Center (OC-> Manage Controller -> Deprovision).
+Option 2, the user permissions can be modified to deny access (using our RBAC capability)
+Option 3, the ingress to the controller can be modified by removing the destination path.
 
 ```bash
 kubectl get ingress democontroller -n cloudbeesci -o yaml > ingress.yaml
@@ -271,7 +274,7 @@ With the second click we create a new Controller with the same name.
 
 Because our blueprint for the controller is stored in the CasC (Configuration
 as Code for controllers) and this contains the backup & restore folder with the
-jobs and gets the Azure Service Principal Credeatails from the kubernetes secret, we
+jobs and gets the Azure Service Principal Credentials from the kubernetes secret, we
 can restore the last non-compromised backup there!
 
 If we know that the credentials from the Key Vault have also been compromised,
@@ -301,6 +304,13 @@ been compromised and will be reset accordingly. The old data should not and
 must not be used any more.
 
 ### Make the Instance Available to Others
+
+The instance was made available by creating a new controller instance per
+Operation Center in the previous step. The steps described here would scale up
+on the old stateful set, which was destroyed (since we deleted it in the
+Operation Center).  This is correctly described in the paragraph just below
+this one.
+
 ```bash
 # kubectl scale statefulset <NAME> --replicas=1 --n <xxxxxxx>
 $ kubectl get statefulset.apps -n cloudbeesci
@@ -311,8 +321,8 @@ rsadowski-playground   1/1     23h
 test                   1/1     46m
 
 $ kubectl scale statefulset democontroller --replicas=1 --n cloudbeesci
-
 ```
+
 #### Restore the route to the Jenkins service or unblock access via the proxy.
 
 We deleted the controller. This also automatically deleted the Ingress entry.
