@@ -40,56 +40,55 @@ The deployment will be done in Azure using AKS (Azure Kubernetes Service).
 
 ## Our apporch:
 
-Computacenter is pursuing a solution with the enterprise [CloudBees CI](https://docs.cloudbees.com/docs/cloudbees-ci/latest/architecture/ci-cloud)
-instead of open source Jenkins. We are certain that this solution can fulfil
-these and many other requirements better and we would like to demonstrate this for
-this task. Our goal is to have less effort in the implementation and operation
-through the features of an enterprise solution.
+Computacenter decided to pursue a solution using the enterprise version of [CloudBees CI](https://docs.cloudbees.com/docs/cloudbees-ci/latest/architecture/ci-cloud)
+instead of open-source Jenkins. We are confident that this solution can fulfill
+these and many other requirements more effectively, and we would like to
+demonstrate this through this task. Our goal is to reduce implementation and
+operational effort while increasing security by leveraging the features of an
+enterprise solution.
+
 
 ### 1. Create a Jenkins Instance with Dummy Jobs on Kubernetes
 
-Our approach is to provide everything as code and automate as much as possible.
-For this task, we have chosen to set up the Azure infrastructure AKS with
-Terraform. We decided to adopt ArgoCD for the central deployment of the
-[CloudBees Operation Center](https://docs.cloudbees.com/docs/cloudbees-ci/latest/architecture/ci-cloud).
-The CloudBees controllers (Jenkins instances for the teams) can be automated or provisioned with a mouse click. However, we also
-wanted to take the GitOps approach for the CloudBees Operation Center.
+Our approach is to provide **everything as code** and **automate** as much as possible.
+For this task, we chose to set up the Azure infrastructure (AKS) using
+Terraform. We decided to adopt Argo CD for the central deployment of the
+[CloudBees Operations
+Center](https://docs.cloudbees.com/docs/cloudbees-ci/latest/architecture/ci-cloud).
+The CloudBees controllers (Jenkins instances for the teams) can be automated or
+provisioned with a mouse click. However, we also wanted to take the GitOps
+approach for the CloudBees Operations Center.
 
-The following diagram shows how the architecture works and how the controllers
-(Jenkins team instances) are provisioned, configured and controlled by the
-CloudBees Operation Center.
+The following diagram illustrates the architecture and how the controllers
+(Jenkins team instances) are provisioned, configured, and managed by the
+CloudBees Operations Center.
+
 ![CloudBees Operation Center AKS Overview](./images/cbci-overview.png)
 
+Many software systems use secret data for authentication, such as user
+passwords, secret keys, access tokens, and certificates. These can, of course,
+be stored in a Jenkins Credentials Store. However, this means that if the
+`master.key` is stolen, all credentials are directly compromised.
 
-Many software systems use secret data for authentication, e.g. user passwords,
-secret keys, access tokens and certificates.
+Our approach was to use an **Azure Key Vault** to manage important credentials that
+can be accessed via an **Azure Service Principal**. This Azure Service Principal is
+granted read-only rights and is accessible only from the controller. It is
+stored solely in the Operations Center.
 
-These can of course be stored in a Jenkins Credentials Store. However, this has
-the consequence that as soon as the master.key is stolen. All credentials are
-directly compromised.
+Although this was not requested in the technical task, we implemented it with
+minimal effort. To meet the task requirements (even though we believe they pose
+a significant security risk), we, for example, store a simple secret in the
+Jenkins Credentials Store of the respective controller.
 
-Our approach was to use an Azure KeyVault to manage the important credentials
-that can be accessed via an Azure Service Principal. This Azure Service
-Principal only gets READ-only rights and only from the controller and is stored
-in the Operation Center ONLY. This would mean that each development team would
-be assigned one Azure Service Principal per Jenkins, including its own Azure
-KeyVault.
-
-This was not requested in the ‘Tech Task’ but was implemented by us with minimal
-effort. In order to map the tasks (although they certainly involve a great
-security risk from our point of view), for example, we store a simple secret in
-the Jenkins Credentials Store of the respective controller.
-
-Below is an example image of what this looks like and was partially implemented
-by us.
+Below is an example image of this setup, which we partially implemented.
 
 ![Key Vault Setup](./images/keyvault-setup.png)
 
-Due to time and resource constraints and as it is not a requirement of the Tech
-Task, we have not built this High Availability (active/active). Since CloudBees
-supports this out-of-box, it would be possible in this setup with little
-effort. More about this here:
-[High Availability (active/active) docs](https://docs.cloudbees.com/docs/cloudbees-ci/latest/ha/ha-fundamentals)
+Due to time and resource constraints, and since it was not a requirement of the
+technical task, we did not build this in a High Availability (active/active)
+configuration. Since CloudBees supports this out-of-the-box, it would be
+possible in this setup with minimal effort. More information can be found here:
+[High Availability (active/active) documentation](https://docs.cloudbees.com/docs/cloudbees-ci/latest/ha/ha-fundamentals).
 
 ### 2. Backup the Instance and Validate the Backup
 
@@ -106,7 +105,6 @@ The following supported way was implemented by us. You can all find details here
 https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-backup-plugin
 https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/restoring-from-backup-plugin
 https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/kubernetes
-
 
 #### Implement a backup strategy for the Jenkins instance.
 
