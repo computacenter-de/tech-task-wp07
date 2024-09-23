@@ -10,8 +10,6 @@ data:
     version: "1.2"
     jcasc:
       - "jenkins.yaml"
-    catalog:
-      - "plugin-catalog.yaml"
     plugins:
       - "plugins.yaml"
     items:
@@ -66,26 +64,8 @@ data:
         provisionControllerOnCreation: true
         timeout: 600
   
-  plugin-catalog.yaml: |
-    type: "plugin-catalog"
-    version: "1" 
-    name: "azure-plugin-catalog"
-    displayName: "Azure Plugin Catalog"
-    configurations:
-    - description: Exported plugins
-      includePlugins:
-        azure-credentials:
-          version: 254.v64da_8176c83a
-        azure-keyvault:
-          version: 193.vdc33a_680fef6
-        azure-sdk:
-          version: 132.v62b_48eb_6f32f
-
   plugins.yaml: |
     plugins:
-    - id: azure-credentials
-    - id: azure-keyvault
-    - id: azure-sdk
     - id: ace-editor
     - id: antisamy-markup-formatter
     - id: apache-httpcomponents-client-4-api
