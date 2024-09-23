@@ -319,13 +319,14 @@ We deleted the controller. This also automatically deleted the Ingress entry.
 When a new controller was created, it was recreated and should be accessible
 again.
 
-Generally we recommend to use the LDAP or Azure Entra integration and RBAC
-features provided by CloudBees on the Operations Center level. This, together
-with the concept of providing preconfigured controllers to the single teams,
-will ensure a secure setup, minimize the impact of security issues inside a
-single controller and keep administrative configuration out of the reach of
-attackers as well as enforcing mandatory security and stability configurations
-over the whole system.
+Generally we recommend to use the LDAP or Microsoft Entra ID (formerly Azure
+Active Directory)  integration and Role-based access control (RBAC) features
+provided by CloudBees on the Operations Center level. This, together with the
+concept of providing preconfigured controllers to the single teams, will ensure
+a secure setup, minimize the impact of security issues inside a single
+controller and keep administrative configuration out of the reach of attackers
+as well as enforcing mandatory security and stability configurations over the
+whole system.
 
 ### Validate that the Jobs are Still Working
 #### Ensure all dummy jobs are functioning correctly after the security changes.
