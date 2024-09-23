@@ -216,7 +216,7 @@ We have tested this several times on our AKS setup. And it is a simple task:
 3) Restart the controller and you're done.
 4) (To proof it you can run the automatically deployed verification pipeline (CasC) which is connecting to the azure key vault and reading a dummy secret.)
 
-**TODO** der überprüft checksum...
+The backup restore job itself is verifying the integrity of the backup during restore by validating a checksum.
 
 Excluding files from a backup job is also possible. Is is important for the next task "Security Breach Scenario: Master Key Exposure".
 
@@ -317,6 +317,8 @@ $ kubectl scale statefulset democontroller --replicas=1 --n cloudbeesci
 We deleted the controller. This also automatically deleted the Ingress entry.
 When a new controller was created, it was recreated and should be accessible
 again.
+
+Generally we recommend to use the ldap integration and rbac features provided by CloudBees on the Operations Center level. This, together with the concept of providing preconfigured controllers to the single teams, will ensure a secure setup, minimize the impact of security issues inside a single controller and keep administrative configuraiton out of the reach of attackers as well as enforcing mandatory security and stability configuraitons over the whole system.
 
 ### Validate that the Jobs are Still Working
 #### Ensure all dummy jobs are functioning correctly after the security changes.
