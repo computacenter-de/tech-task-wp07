@@ -152,7 +152,8 @@ CloudBees provides a Backup Plugin that can automate regular backups of the
 Jenkins home directory and other necessary files. Open Source Jenkins doesn't
 provide that plugin based backup approach.
 
-The following supported way was implemented by us. You can all find details here:
+The following supported way was implemented by us. You can all find details in
+the official documentation:
 
 * [Backup Plugin Documentation](https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-backup-plugin)
 * [Restoring from a Backup](https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/restoring-from-backup-plugin)
@@ -292,8 +293,8 @@ rsadowski-playground   1/1     23h
 test                   1/1     46m
 
 $ kubectl scale statefulset democontroller \
-  --replicas=0 \
-  --n cloudbeesci
+    --replicas=0 \
+    --n cloudbeesci
 
 ```
 ##### Alternatively, remove the route to the Jenkins service or block access using a proxy.
@@ -378,8 +379,8 @@ rsadowski-playground   1/1     23h
 test                   1/1     46m
 
 $ kubectl scale statefulset democontroller \
-  --replicas=1 \
-  --n cloudbeesci
+    --replicas=1 \
+    --n cloudbeesci
 ```
 
 #### Restore the route to the Jenkins service or unblock access via the proxy.
@@ -433,7 +434,8 @@ corresponding Terraform code can be found in the aks folder.
 
    ```bash
     terraform init
-    # Create a Service Principal (or you can skip this if you already have one)
+    # Create a Service Principal (or you can skip this if
+    # you already have one)
     SP=$(az ad sp create-for-rbac \
       --name "wp07-couldbees-sp" \
       --role contributor \
@@ -449,7 +451,8 @@ corresponding Terraform code can be found in the aks folder.
     ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
 
     # Export the environment variables for the current session
-    export ARM_CLIENT_ID ARM_CLIENT_SECRET ARM_TENANT_ID ARM_SUBSCRIPTION_ID
+    export ARM_CLIENT_ID ARM_CLIENT_SECRET
+    export ARM_TENANT_ID ARM_SUBSCRIPTION_ID
 
     # Output the variables to verify
     echo "ARM_CLIENT_ID=$ARM_CLIENT_ID"
