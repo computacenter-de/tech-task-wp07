@@ -73,7 +73,7 @@ be stored in a Jenkins Credentials Store. However, this means that if the
 Our approach was to use an **Azure Key Vault** to manage important credentials that
 can be accessed via an **Azure Service Principal**. This Azure Service Principal is
 granted read-only rights and is accessible only from the controller. It is
-stored solely in the Operations Center.
+stored in a Kubernetes secret an loaded during controller provisioning.
 
 Although this was not requested in the technical task, we implemented it with
 minimal effort. To meet the task requirements (even though we believe they pose
@@ -116,9 +116,9 @@ example).
 To store the backups, we use Azure Blob Storage where access is carried out via
 credential.
 
-This ‘Backup & Restore’ was set up by us manually, but can be stored as code
+This ‘Backup & Restore’ is stored as code
 and automatically forced and rolled out on all controllers (Jenkins Team
-Instants).
+Instants). Together with the pre-configured key vault integration, the restore of the backup can be done with one click after a controller is provisioned.
 
 Our "Backup & Restore" folder as code:
 
@@ -186,43 +186,6 @@ items:
   description: ''
   disabled: false
   displayName: Restore
-- kind: pipeline
-  name: hello-world-pipeline
-  concurrentBuild: true
-  definition:
-    cpsFlowDefinition:
-      sandbox: true
-      script: |-
-        pipeline {
-            agent {
-                kubernetes {
-                    yaml """
-                    apiVersion: v1
-                    kind: Pod
-                    spec:
-                      containers:
-                      - name: maven
-                        image: maven:3.9.9-eclipse-temurin-21-alpine
-                        command:
-                        - cat
-                        tty: true
-                    """
-                }
-            }
-            stages {
-                stage('Build') {
-                    steps {
-                        container('maven') {
-                            sh 'mvn --version'
-                        }
-                    }
-                }
-            }
-        }
-  description: ''
-  disabled: false
-  displayName: hello-world-pipeline
-  resumeBlocked: false
 properties:
 - envVars: {
     }
@@ -251,6 +214,7 @@ We have tested this several times on our AKS setup. And it is a simple task:
 1) Activate backup in the pipeline manually or it is executed every hour as we do
 2) To restore, simply execute the ‘Restore’ job. In our case, the last backup is used.
 3) Restart the controller and you're done.
+4) (To proof it you can run the automatically deployed verification pipeline (CasC) which is connecting to the azure key vault and reading a dummy secret.)
 
 **TODO** der überprüft checksum...
 
@@ -304,15 +268,13 @@ controller. Here is our procedure.
 First of all we delete the controller in the Operation Center by one click.
 With the second click we create a new Controller with the same name. 
 
-Because our blueprint for the controller is stored in the CaaC (Configuration
+Because our blueprint for the controller is stored in the CasC (Configuration
 as Code for controllers) and this contains the backup & restore folder with the
-jobs and gets the Azure Service Principal Credeatails from the operator (these
-were not compromised because they are only contained in the Operation Center
-and are ONLY used at runtime in the controller AND are not stored there), we
+jobs and gets the Azure Service Principal Credeatails from the kubernetes secret, we
 can restore the last non-compromised backup there!
 
 If we know that the credentials from the Key Vault have also been compromised,
-they must be changed there.
+they must be changed there. At least the service principal secret should be updated with a new password before starting the new controller.
 
 
  > Configuration as Code for controllers simplifies the management of a
@@ -320,8 +282,8 @@ they must be changed there.
  > in human-readable declarative configuration files which can then be applied to
  > a controller in a reproducible way.
 
-In the diagram below you can see how the "CaaC" works. The corresponding code
-for our example can be found at [CloudBees Operation + CaaC Helm
+In the diagram below you can see how the "CasC" works. The corresponding code
+for our example can be found at [CloudBees Operation + CasC Helm
 Chart](cloudbees-ci).
 
 ![Configuration as Code for controllers](./images/controller-intro.0d638c1.png)
