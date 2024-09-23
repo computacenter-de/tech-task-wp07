@@ -54,7 +54,7 @@ on-premise or in the public cloud used to deliver CI at scale. It provides a
 shared, centrally managed, self-service experience for all your development
 teams running Jenkins. CloudBees CI on modern cloud platforms is designed to
 run on Kubernetes. CloudBees CI on traditional platforms has been developed for
-on-premise installations. I includes the following features:
+on-premise installations. It includes the following features:
 
 - **Jenkins (HA-setup):** CloudBees CI provides built-in high-availability (HA)
 configurations, reducing the complexity and effort required to maintain a
@@ -127,9 +127,9 @@ granted read-only rights and is accessible only from the controller. It is
 stored in a Kubernetes secret an loaded during controller provisioning.
 
 Although this was not requested in the technical task, we implemented it with
-minimal effort. To meet the task requirements (even though we believe they pose
-a significant security risk), we, for example, store a simple secret in the
-Jenkins Credentials Store of the respective controller.
+minimal effort. To meet the requirement of rotating the master key (even though we
+believe this poses a significant security risk), we, for example, store a simple
+secret in the Jenkins Credentials Store of the respective controller.
 
 Below is an example image of this setup, which we partially implemented.
 
@@ -153,9 +153,10 @@ Jenkins home directory and other necessary files. Open Source Jenkins doesn't
 provide that plugin based backup approach.
 
 The following supported way was implemented by us. You can all find details here:
-https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-backup-plugin
-https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/restoring-from-backup-plugin
-https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/kubernetes
+
+* [Backup Plugin Documentation](https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-backup-plugin)
+* [Restoring from a Backup](https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/restoring-from-backup-plugin)
+* [Backup and Restore in Kubernetes](https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/kubernetes)
 
 #### Implement a backup strategy for the Jenkins instance.
 
@@ -168,7 +169,7 @@ To store the backups, we use Azure Blob Storage where access is carried out via
 credential.
 
 This ‘Backup & Restore’ is stored as code and automatically forced and rolled
-out on all controllers (Jenkins Team Instants). Together with the
+out on all controllers (Jenkins Team Instances). Together with the
 pre-configured key vault integration, the restore of the backup can be done
 with one click after a controller is provisioned.
 
@@ -263,12 +264,12 @@ successful. The same applies to the restore process.
 
 We have tested this several times on our AKS setup. And it is a simple task:
 
-1) Activate backup in the pipeline manually or it is executed every hour as we do
+1) Activate the backup in the pipeline manually, otherwise it is executed every hour as in our setup.
 2) To restore, simply execute the ‘Restore’ job. In our case, the last backup is used.
 3) Restart the controller and you're done.
-4) (To proof it you can run the automatically deployed verification pipeline (CasC) which is connecting to the azure key vault and reading a dummy secret.)
+4) (To proof it you can run the automatically deployed verification pipeline (CasC) which connetcs to the azure key vault and reads a dummy secret.)
 
-The backup restore job itself is verifying the integrity of the backup during restore by validating a checksum.
+The backup restore job itself verifies the integrity of the backup during restore by validating a checksum.
 
 Excluding files from a backup job is also possible. Is is important for the next task "Security Breach Scenario: Master Key Exposure".
 
@@ -290,24 +291,29 @@ democontroller         1/1     17h
 rsadowski-playground   1/1     23h
 test                   1/1     46m
 
-$ kubectl scale statefulset democontroller --replicas=0 --n cloudbeesci
+$ kubectl scale statefulset democontroller \
+  --replicas=0 \
+  --n cloudbeesci
 
 ```
 ##### Alternatively, remove the route to the Jenkins service or block access using a proxy.
 
 Depending on which forensic methods are to be used where, the following options can be carried out.
 
-Option 1, the controller can be shutdown from the Operation Center (OC-> Manage Controller -> Deprovision).
-Option 2, the user permissions can be modified to deny access (using our RBAC capability)
-Option 3, the ingress to the controller can be modified by removing the destination path.
+* Option 1, the controller can be shutdown from the Operation Center (OC-> Manage Controller -> Deprovision).
+* Option 2, the user permissions can be modified to deny access (using our RBAC capability)
+* Option 3, the ingress to the controller can be modified by removing the destination path.
 
 ```bash
 kubectl get ingress democontroller -n cloudbeesci -o yaml > ingress.yaml
 # ... edit the destination path
 # One-liner
 kubectl get ingress democontroller -n cloudbeesci -o json \
-  | jq 'del(.metadata.resourceVersion, .metadata.uid, .metadata.annotations["kubectl.kubernetes.io/last-applied-configuration"], .status)
-        | .spec.rules[].http.paths[].path = "/NEW-PATH-TO-NOWHERE/"' \
+  | jq 'del(.metadata.resourceVersion, \
+    .metadata.uid, \
+    .metadata.annotations["kubectl.kubernetes.io/last-applied-configuration"], \
+    .status) \
+  | .spec.rules[].http.paths[].path = "/NEW-PATH-TO-NOWHERE/"' \
   | kubectl apply -f -
 ```
 We will delete the controller anyway as it is no longer trustworthy.
@@ -325,7 +331,7 @@ With the second click we create a new Controller with the same name.
 
 Because our blueprint for the controller is stored in the CasC (Configuration
 as Code for controllers) and this contains the backup & restore folder with the
-jobs and gets the Azure Service Principal Credentials from the kubernetes secret, we
+jobs and gets the Azure Service Principal Credentials from the Kubernetes Secret, we
 can restore the last non-compromised backup there!
 
 If we know that the credentials from the Key Vault have also been compromised,
@@ -371,7 +377,9 @@ democontroller         1/1     17h
 rsadowski-playground   1/1     23h
 test                   1/1     46m
 
-$ kubectl scale statefulset democontroller --replicas=1 --n cloudbeesci
+$ kubectl scale statefulset democontroller \
+  --replicas=1 \
+  --n cloudbeesci
 ```
 
 #### Restore the route to the Jenkins service or unblock access via the proxy.
@@ -426,7 +434,13 @@ corresponding Terraform code can be found in the aks folder.
    ```bash
     terraform init
     # Create a Service Principal (or you can skip this if you already have one)
-    SP=$(az ad sp create-for-rbac --name "wp07-couldbees-sp" --role contributor --scopes /subscriptions/$(az account show --query id -o tsv))
+    SP=$(az ad sp create-for-rbac \
+      --name "wp07-couldbees-sp" \
+      --role contributor \
+      --scopes /subscriptions/$(az account show \
+        --query id \
+        -o tsv)
+    )
 
     # Extract the necessary values from the JSON output
     ARM_CLIENT_ID=$(echo $SP | jq -r '.appId')
@@ -456,7 +470,9 @@ To verify the setup:
    Get credentials for your AKS cluster:
 
    ```bash
-   az aks get-credentials --resource-group aks-resource-group --name aks-cluster
+   az aks get-credentials \
+     --resource-group aks-resource-group \
+     --name aks-cluster
    kubectl get nodes
    ```
 
@@ -482,7 +498,9 @@ To enable the **HTTP Application Routing Add-on** for your AKS cluster,
 we run the following CLI command:
 
    ```bash
-   az aks approuting enable --resource-group <ResourceGroupName> --name <ClusterName>
+   az aks approuting enable \
+     --resource-group <ResourceGroupName> \
+     --name <ClusterName>
    ```
 
 Once this add-on is enabled, the `app-routing-system` namespace will be
@@ -513,7 +531,11 @@ Make sure you have the Helm CLI installed locally and that you can connect to yo
 Run the following command to install ArgoCD:
 
 ```bash
-helm install argo-cd oci://ghcr.io/argoproj/argo-helm/argo-cd --version 7.5.2 --namespace argo-cd
+helm install \
+  argo-cd \
+  oci://ghcr.io/argoproj/argo-helm/argo-cd \
+  --version 7.5.2 \
+  --namespace argo-cd
 ```
 
 You can monitor the installation via 
@@ -525,13 +547,19 @@ kubectl -n argo-cd get pods -w
 As soon as the installation is done, retreive your admin password using
 
 ```bash
-kubectl get secret -n argo-cd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+kubectl get secret \
+  -n argo-cd argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" \
+  | base64 -d
 ```
 
 and connect to ArgoCD via local port forward:
 
 ```bash
-kubectl port-forward services/argo-cd-argocd-server -n argo-cd 8443:443
+kubectl port-forward \
+  services/argo-cd-argocd-server \
+  -n argo-cd \
+  8443:443
 ```
 
 You can now access the instance via your browser: https://localhost:8443
@@ -542,4 +570,4 @@ Afterwards, you can navigate to "Applications" and create a "New App". Use the r
 
 Attention: Connecting and syncing your applications will also change ArgoCD to be available under the context path `/argocd/`. It will also create an ingress ressource so that ArgoCD is available publicly!
 
-After the sync is done, you can connect to your CloudBees Jenkins Operations Center (CJOC) via the public domain and the context path `/cjoc/`
+After the sync is done, you can connect to your CloudBees Jenkins Operations Center (CJOC) via the public domain and the context path `/cjoc/`.
