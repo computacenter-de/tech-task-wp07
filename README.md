@@ -98,8 +98,8 @@ validating it by testing restoration in a separate environment ensures that the
 backup is reliable and can be used in a real disaster recovery situation.
 
 CloudBees provides a Backup Plugin that can automate regular backups of the
-Jenkins home directory and other necessary files. OSS doesn't provide that
-plugin based backup approach.
+Jenkins home directory and other necessary files. Open Source Jenkins doesn't
+provide that plugin based backup approach.
 
 The following supported way was implemented by us. You can all find details here:
 https://docs.cloudbees.com/docs/cloudbees-ci/latest/backup-restore/cloudbees-backup-plugin
@@ -116,9 +116,10 @@ example).
 To store the backups, we use Azure Blob Storage where access is carried out via
 credential.
 
-This ‘Backup & Restore’ is stored as code
-and automatically forced and rolled out on all controllers (Jenkins Team
-Instants). Together with the pre-configured key vault integration, the restore of the backup can be done with one click after a controller is provisioned.
+This ‘Backup & Restore’ is stored as code and automatically forced and rolled
+out on all controllers (Jenkins Team Instants). Together with the
+pre-configured key vault integration, the restore of the backup can be done
+with one click after a controller is provisioned.
 
 Our "Backup & Restore" folder as code:
 
@@ -318,7 +319,13 @@ We deleted the controller. This also automatically deleted the Ingress entry.
 When a new controller was created, it was recreated and should be accessible
 again.
 
-Generally we recommend to use the ldap integration and rbac features provided by CloudBees on the Operations Center level. This, together with the concept of providing preconfigured controllers to the single teams, will ensure a secure setup, minimize the impact of security issues inside a single controller and keep administrative configuration out of the reach of attackers as well as enforcing mandatory security and stability configurations over the whole system.
+Generally we recommend to use the LDAP or Azure Entra integration and RBAC
+features provided by CloudBees on the Operations Center level. This, together
+with the concept of providing preconfigured controllers to the single teams,
+will ensure a secure setup, minimize the impact of security issues inside a
+single controller and keep administrative configuration out of the reach of
+attackers as well as enforcing mandatory security and stability configurations
+over the whole system.
 
 ### Validate that the Jobs are Still Working
 #### Ensure all dummy jobs are functioning correctly after the security changes.
